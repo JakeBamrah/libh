@@ -1,13 +1,14 @@
-PROG_NAME = libh.a
+LIB_NAME = libh.a
 FILES := $(wildcard *.c)
-OBJECTS = stack.o ternary_tree.o
+OBJECTS = $(patsubst %.c, build/%.o, $(FILES))
 
 # build libh as static lib
-$(PROG_NAME): $(OBJECTS)
+build/$(LIB_NAME): $(OBJECTS)
 	ar rcs $@ $^
 
-all: $(FILES)
-	$(CC) -O -c $?
+build/%.o: %.c
+	mkdir -p $(dir $@)
+	$(CC) -o $@ $< -c
 
-clean: $(OBJECTS) $(PROG_NAME)
-	rm $^
+clean:
+	rm -r build
