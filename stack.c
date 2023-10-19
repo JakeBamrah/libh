@@ -14,7 +14,7 @@ int stack_empty(Stack *stack) {
 }
 
 int stack_full(Stack *stack) {
-    return stack->top == LIBH_MAX_SIZE - 1;
+    return stack->top == (1 << LIBH_STACK_EXP) - 1;
 }
 
 int stack_pop(Stack *stack) {

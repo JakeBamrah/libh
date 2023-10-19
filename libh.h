@@ -1,12 +1,12 @@
 #include <stdint.h>
 
-#define LIBH_MAX_SIZE 1000
 
 
 /* -------------------------- STACK ----------------------------- */
+#define LIBH_STACK_EXP 15
 
 typedef struct {
-    uint16_t data[LIBH_MAX_SIZE];
+    uint16_t data[1 << LIBH_STACK_EXP];
     int top;
 } Stack;
 
