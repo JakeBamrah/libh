@@ -25,12 +25,12 @@ uint64_t hash_fnv(char *s, uint32_t len) {
     return h;
 }
 
-struct hashtable hash_table_init() {
+struct hashtable hashtable_init() {
     struct hashtable t = LIBH_HASHTABLE_INIT;
     return t;
 }
 
-uint64_t hash_idx_lookup(uint64_t hash, int exp, uint32_t idx) {
+static uint64_t hashtable_idx_lookup(uint64_t hash, int exp, uint32_t idx) {
     // double-hash (mask-step-index) to derive table index for incoming hash
     // array-space is limited to 31-bits (sufficient for current usecases)
     // double-hash allows keys starting / landing at the same space to diverge
@@ -42,11 +42,11 @@ uint64_t hash_idx_lookup(uint64_t hash, int exp, uint32_t idx) {
 }
 
 static char gravestone[] = "(deleted)";
-char *hash_intern(struct hashtable *t, char *key) {
+char *hashtable_intern(struct hashtable *t, char *key) {
     uint64_t h = hash_fnv(key, strlen(key));
     char **dest = 0; // used to track deleted indexes for reuse
     for (int32_t i = h;;) {
-        i = hash_idx_lookup(h, LIBH_HASHTABLE_EXP, i);
+        i = hashtable_idx_lookup(h, LIBH_HASHTABLE_EXP, i);
         if (!t->ht[i]) {
             // limit table to 50% capacity—avoid degrading to linear search time
             if ((uint32_t)t->len + 1 == (uint32_t)1<<(LIBH_HASHTABLE_EXP - 1)) {
@@ -67,10 +67,10 @@ char *hash_intern(struct hashtable *t, char *key) {
     }
 }
 
-char *hash_unintern(struct hashtable *t, char *key) {
+char *hashtable_unintern(struct hashtable *t, char *key) {
     uint64_t h = hash_fnv(key, strlen(key));
     for (int32_t i = h;;) {
-        i = hash_idx_lookup(h, LIBH_HASHTABLE_EXP, i);
+        i = hashtable_idx_lookup(h, LIBH_HASHTABLE_EXP, i);
         if (!t->ht[i] || t->ht[i] == gravestone) {
             return 0;
         } else if (!strcmp(t->ht[i], key)) { // delete value at index
@@ -81,10 +81,10 @@ char *hash_unintern(struct hashtable *t, char *key) {
     }
 }
 
-char *hash_table_get(struct hashtable *t, char *key) {
+char *hashtable_get(struct hashtable *t, char *key) {
     uint64_t h = hash_fnv(key, strlen(key));
     for (int32_t i = h;;) {
-        i = hash_idx_lookup(h, LIBH_HASHTABLE_EXP, i);
+        i = hashtable_idx_lookup(h, LIBH_HASHTABLE_EXP, i);
         if (!t->ht[i] || t->ht[i] == gravestone) {
             // we've stepped into an unused space without yet finding the key
             // it must not exist in the hash table
