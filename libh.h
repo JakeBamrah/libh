@@ -9,14 +9,14 @@
 typedef struct {
     uint16_t data[1 << LIBH_STACK_EXP];
     int top;
-} Stack;
+} stack;
 
-Stack   stack_init();
-int     stack_empty(Stack *stack);
-int     stack_full(Stack *stack);
-int     stack_pop(Stack *stack);
-int     stack_peek(Stack *stack);
-int     stack_push(Stack *stack, uint16_t value);
+stack   stack_init();
+int     stack_empty(stack *stack);
+int     stack_full(stack *stack);
+int     stack_pop(stack *stack);
+int     stack_peek(stack *stack);
+int     stack_push(stack *stack, uint16_t value);
 
 
 /* -------------------------- ARENA ----------------------------- */
