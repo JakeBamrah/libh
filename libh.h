@@ -62,3 +62,19 @@ struct map {
 };
 
 char **hashmap_upsert(map **m, str key, arena *perm);
+
+
+/* --------------------- PRIORITY QUEUE ------------------------- */
+#define LIBH_PQ_EXP 15
+
+typedef struct {
+    uint32_t heap[1 << LIBH_PQ_EXP];
+    uint32_t len;
+} priority_q;
+
+priority_q pq_init();
+int pq_full(priority_q *pq);
+int pq_empty(priority_q *pq);
+int pq_add(priority_q *pq, uint32_t value);
+int pq_pop(priority_q *pq, uint32_t *value);
+int pq_peek(priority_q *pq, uint32_t *value);
